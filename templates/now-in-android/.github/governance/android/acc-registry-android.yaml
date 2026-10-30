@@ -1,0 +1,122 @@
+schema_version: 1
+platform: android
+description: >
+  Android Architecture Constraint Contract (ACC) registry.
+  Managed by LeadAndroidAgent. AndroidArchitectAgent authors entries.
+  AndroidProgrammerAgent must not proceed without an APPROVED acc_id for STRUCTURAL scopes.
+
+entries:
+  - acc_id: AND-ACC-2026-004
+    title: "common build-logic Jacoco: add AGP 9 built_in_kotlinc class path"
+    scope: STRUCTURAL
+    date: "2026-10-22"
+    status: APPROVED
+    author: AndroidArchitectAgent
+    lead_approval: APPROVED
+    summary: >
+      Add "**/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes/**" to the
+      kotlinClasses include of AtobeJacocoConventionPlugin and of the root
+      jacocoUnitTestReportAggregate task in core/common, keeping the legacy
+      tmp/kotlin-classes path. Restores Kotlin classes in jacoco.xml (and therefore Sonar
+      coverage) for AGP 9 built-in Kotlin. The plugin is published to Nexus and consumed by
+      code/utilities, code/services, code/app and core-sdk/sdk-android, all pinned
+      to atobeBuildLogic 1.0.2, so there is no cross-repo effect until they bump.
+    affected_modules:
+      - core/common/build-logic/convention
+      - core/common (root build.gradle.kts)
+    dependency_changes: []
+    hilt_impact: none
+    local_remote_toggle: false
+    invariants_verified:
+      - domain_no_android_imports: N/A
+      - no_cross_layer_data_leak: N/A
+      - fake_contract_maintained: N/A
+
+  - acc_id: AND-ACC-2026-003
+    title: "android auto parking mode flow contract expansion"
+    scope: STRUCTURAL
+    date: "2026-08-12"
+    status: APPROVED
+    author: AndroidArchitectAgent
+    lead_approval: APPROVED
+    summary: >
+      Expand Android Auto parking entry and start-validation contracts to support
+      modality subscription branching, PAYMENT_ISSUES profile-type differentiation,
+      and secondary-profile-unavailable outcomes while preserving existing
+      parking error fallback behavior with error-code suffix for unmapped errors.
+    affected_modules:
+      - code/services/parking-sdk-domain
+      - code/services/parking-sdk-infrastructure
+      - code/services/parking-sdk-presentation
+    hilt_impact: new-binding
+    local_remote_toggle: false
+    invariants_verified:
+      - domain_no_android_imports: true
+      - no_cross_layer_data_leak: true
+      - fake_contract_maintained: true
+
+  - acc_id: AND-ACC-2026-001
+    title: "ui-toolkit-owned Appium tag contract"
+    scope: STRUCTURAL
+    date: "2026-06-26"
+    status: APPROVED
+    author: AndroidArchitectAgent
+    lead_approval: APPROVED
+    summary: >
+      Centralize Compose Appium test tag generation inside shared ui-toolkit
+      primitives. Reusable components own semantics { testTagsAsResourceId = true }
+      and screen-level callers pass only a semantic suffix/value. Affects shared
+      Compose primitives in utilities/ui-toolkit and their consumers in
+      app/presentation.
+    affected_modules:
+      - code/utilities/ui-toolkit
+      - code/app/presentation
+    hilt_impact: none
+    local_remote_toggle: false
+    invariants_verified:
+      - domain_no_android_imports: N/A
+      - no_cross_layer_data_leak: true
+      - fake_contract_maintained: N/A
+
+  - acc_id: AND-ACC-2026-002
+    title: "login-flow exception screen Appium tags"
+    scope: STRUCTURAL
+    date: "2026-06-26"
+    status: APPROVED
+    author: AndroidArchitectAgent
+    lead_approval: APPROVED
+    summary: >
+      Add deterministic screen-level Appium test tags and semantics for
+      login-flow and permission/start/update exception screens where low-level
+      ui-toolkit composition is not sufficient. Keep testTagsAsResourceId usage
+      and existing prefix convention while avoiding localized/runtime-derived
+      suffixes.
+    affected_modules:
+      - code/utilities/authentication-sdk-presentation
+      - code/app/presentation
+    hilt_impact: none
+    local_remote_toggle: false
+    invariants_verified:
+      - domain_no_android_imports: N/A
+      - no_cross_layer_data_leak: true
+      - fake_contract_maintained: N/A
+
+# Template for new entries:
+#
+# - acc_id: AND-ACC-YYYY-NNN
+#   title: "<short description>"
+#   scope: STRUCTURAL
+#   date: "YYYY-MM-DD"
+#   status: APPROVED | PENDING | REJECTED
+#   author: AndroidArchitectAgent
+#   lead_approval: APPROVED | PENDING
+#   summary: >
+#     <What changes. Why. Which modules/repos affected.>
+#   affected_modules:
+#     - <repo>/<module>
+#   hilt_impact: none | scope-change | new-binding | multi-binding
+#   local_remote_toggle: false | true
+#   invariants_verified:
+#     - domain_no_android_imports: true | false | N/A
+#     - no_cross_layer_data_leak: true | false | N/A
+#     - fake_contract_maintained: true | false | N/A
